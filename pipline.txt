@@ -1,0 +1,45 @@
+C. Create the Freestyle job: simple-html-site
+1 — Create job (UI)
+
+Jenkins dashboard → New Item.
+Enter simple-html-site as name.
+Select Freestyle project → OK.  
+
+
+in this field use Pipeline option:
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building HTML site...'
+                sh 'mkdir site && echo "<h1>Hello from Jenkins!</h1>" > site/index.html'
+            }
+        }
+
+        stage('Publish') {
+            steps {
+                echo 'Publishing site...'
+                publishHTML(target: [
+                    reportDir: 'site',
+                    reportFiles: 'index.html',
+                    reportName: 'My Simple Site'
+                ])
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ CI/CD Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed!'
+        }
+    }
+}
+
+
